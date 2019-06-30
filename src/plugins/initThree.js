@@ -12,7 +12,7 @@ const onWindowResize = () => {
 };
 
 const addObjects = (myScene) => {
-  const texture = new THREE.TextureLoader().load('../../images/yann.jpg');
+  const texture = new THREE.TextureLoader().load('images/yann.jpg');
   const geometry = new THREE.BoxBufferGeometry(200, 200, 200);
   const material = new THREE.MeshBasicMaterial({ map: texture });
   mesh = new THREE.Mesh(geometry, material);
