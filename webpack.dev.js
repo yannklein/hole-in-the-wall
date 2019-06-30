@@ -5,7 +5,10 @@ module.exports = merge(common, {
   mode: 'development',
   devtool: 'inline-source-map',
   output: {
-    publicPath: "/"
+    publicPath: "/dist"
+  },
+  devServer: {
+    contentBase: './'
   },
   devtool: "sourcemap"
 });
