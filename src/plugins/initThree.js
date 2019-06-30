@@ -11,20 +11,27 @@ const onWindowResize = () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
 };
 
-const init = () => {
-  camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 1000);
-  camera.position.z = 400;
-  scene = new THREE.Scene();
+const addObjects = (myScene) => {
   const texture = new THREE.TextureLoader().load('../../images/yann.jpg');
   const geometry = new THREE.BoxBufferGeometry(200, 200, 200);
   const material = new THREE.MeshBasicMaterial({ map: texture });
   mesh = new THREE.Mesh(geometry, material);
-  scene.add(mesh);
+  myScene.add(mesh);
+};
+
+const init = () => {
+  // Camera and Scene settings
+  camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 1000);
+  camera.position.z = 400;
+  scene = new THREE.Scene();
+  // Add objects to the ThreeJS scene
+  addObjects(scene);
+  // Render the scene
   renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight);
   document.body.appendChild(renderer.domElement);
-  //
+  // Event listener on the scene
   window.addEventListener('resize', onWindowResize, false);
 };
 
