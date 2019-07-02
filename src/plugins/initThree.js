@@ -35,9 +35,9 @@ const groundObject = (myScene) => {
 
 const init = (withAR = false) => {
   //Error if not WebGL compatible
-  if ( WEBGL.isWebGLAvailable() === false ) {
-      document.body.appendChild( WEBGL.getWebGLErrorMessage() );
-  }
+  // if ( WEBGL.isWebGLAvailable() === false ) {
+  //     document.body.appendChild( WEBGL.getWebGLErrorMessage() );
+  // }
 
   // init renderer
   var renderer  = new THREE.WebGLRenderer({
