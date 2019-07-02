@@ -1,4 +1,5 @@
-import { init, animate } from './plugins/initThree';
+import { init } from './plugins/initThree';
 
-init();
-animate();
+let withAR = true;
+init(withAR);
+
