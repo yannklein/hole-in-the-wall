@@ -9,23 +9,23 @@ const initARJS = (scene, camera, onRenderFcts, renderer) => {
   var arToolkitSource = new THREEx.ArToolkitSource({
     // to read from the webcam
     sourceType : 'webcam'
-  })
+  });
 
   arToolkitSource.init(function onReady(){
-    onResize()
-  })
+    onResize();
+  });
 
   // handle resize
   window.addEventListener('resize', function(){
-    onResize()
-  })
+    onResize();
+  });
   function onResize(){
     arToolkitSource.onResizeElement()
     arToolkitSource.copyElementSizeTo(renderer.domElement)
     if( arToolkitContext.arController !== null ){
       arToolkitSource.copyElementSizeTo(arToolkitContext.arController.canvas)
     }
-  }
+  };
   ////////////////////////////////////////////////////////////////////////////////
   //          initialize arToolkitContext
   ////////////////////////////////////////////////////////////////////////////////
@@ -38,42 +38,53 @@ const initARJS = (scene, camera, onRenderFcts, renderer) => {
     maxDetectionRate: 30,
     canvasWidth: 80*3,
     canvasHeight: 60*3,
-  })
+  });
   // initialize it
   arToolkitContext.init(function onCompleted(){
     // copy projection matrix to camera
     camera.projectionMatrix.copy( arToolkitContext.getProjectionMatrix() );
-  })
+  });
 
   // update artoolkit on every frame
   onRenderFcts.push(function(){
     if( arToolkitSource.ready === false ) return
     arToolkitContext.update( arToolkitSource.domElement )
-  })
+  });
 
   ////////////////////////////////////////////////////////////////////////////////
   //          Create a ArMarkerControls
   ////////////////////////////////////////////////////////////////////////////////
-  var markerRoot = new THREE.Group
-  scene.add(markerRoot)
+  var markerRoot = new THREE.Group;
+  scene.add(markerRoot);
   var artoolkitMarker = new THREEx.ArMarkerControls(arToolkitContext, markerRoot, {
     //type: 'barcode',
     //barcodeValue: 'https://magicstickr.github.io/video-base/index.html',
     type : 'pattern',
     patternUrl : 'images/marker.patt'
-  })
+  });
 
   // build a smoothedControls
-  var smoothedRoot = new THREE.Group()
-  scene.add(smoothedRoot)
+  var smoothedRoot = new THREE.Group();
+  scene.add(smoothedRoot);
   var smoothedControls = new THREEx.ArSmoothedControls(smoothedRoot, {
     lerpPosition: 0.4,
     lerpQuaternion: 0.3,
     lerpScale: 1,
-  })
+  });
   onRenderFcts.push(function(delta){
     smoothedControls.update(markerRoot);
-  })
+    // console.log(artoolkitMarker.object3d.visible);
+    let elements = document.querySelectorAll(".manual-display");
+    elements.forEach( (element) => {
+      if (element){
+        if (artoolkitMarker.object3d.visible) {
+          element.style.display = "";
+        } else {
+          element.style.display = "none";
+        }
+      }
+    });
+  });
 
   return smoothedRoot;
 }
