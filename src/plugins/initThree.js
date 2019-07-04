@@ -20,9 +20,42 @@ const addBox = (size, myScene) => {
   myScene.add(mesh);
 };
 
-const addYoutubeVideo = (id, x, y, z, ry, myScene) => {
-  myScene.add(new iFrameElement(id, x, y, z, ry));
-}
+const addHoleInTheWall = (myScene) => {
+  var hole = new THREE.Group();
+  // the inside of the hole
+  let geometryHole = new THREE.CylinderGeometry(1,1, 1, 32,1, true);
+  let loader = new THREE.TextureLoader();
+  let texture = loader.load( 'images/bricks.jpg' );
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.RepeatWrapping;
+  texture.repeat.set(4,2);
+  let materialHole = new THREE.MeshBasicMaterial({
+    transparent : true,
+    map: texture,
+    side: THREE.BackSide
+  });
+  var holeInside = new THREE.Mesh( geometryHole, materialHole );
+  holeInside.position.y = -0.6;
+  hole.add( holeInside );
+
+
+  // the invisibility cloak (ring; has circular hole)
+  let geometryCloak = new THREE.RingGeometry(1,30, 32);
+  let materialCloak = new THREE.MeshBasicMaterial({
+     map: loader.load( 'images/bricks.jpg' ), // for testing placement
+    colorWrite: true
+  });
+  var holeCloak = new THREE.Mesh( geometryCloak, materialCloak );
+  holeCloak.rotation.x = -Math.PI/2;
+  holeCloak.position.y -= 0.1;
+  hole.add(holeCloak);
+
+  myScene.add(hole);
+};
+
+const addYoutubeVideo = (id, x, y, z, rx, ry, rz, h, w, myScene) => {
+  myScene.add(new iFrameElement(id, x, y, z, rx, ry, rz, h, w));
+};
 
 const groundObject = (size, myScene) => {
   let geometry = new THREE.PlaneGeometry( size, size, 1 );
@@ -32,7 +65,7 @@ const groundObject = (size, myScene) => {
   ground.rotation.x = - Math.PI / 2;
   ground.position.y = -0.01;
   myScene.add(ground);
-}
+};
 
 const init = (withAR = false, withCSS3D = false) => {
   // init renderer
@@ -106,17 +139,20 @@ const init = (withAR = false, withCSS3D = false) => {
   }
 
   // Add objects to the ThreeJS scene
+  let heightStr = (560).toString();
+  let widthStr = (315).toString();
   if (withAR) {
     let sceneAR = initARJS(scene, camera, onRenderFcts, renderer);
-    addBox(1, sceneAR);
+    // addBox(1, sceneAR);
     if (withCSS3D) {
-      addYoutubeVideo('pm-R3dvrUZg', 0, 0, -50, 0, sceneAR);
+      addHoleInTheWall(sceneAR);
+      addYoutubeVideo('pm-R3dvrUZg', 0, -300, 0, -Math.PI / 2, 0, 0, heightStr, widthStr, sceneAR);
     }
   } else {
     addBox(20, scene);
     groundObject(200, scene);
     if (withCSS3D) {
-      addYoutubeVideo('pm-R3dvrUZg', 0, 0, -50, 0, scene);
+      addYoutubeVideo('pm-R3dvrUZg', 0, 0, -50, 0, 0, 0, heightStr, widthStr, scene);
     }
   }
 
