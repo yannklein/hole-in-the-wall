@@ -15,7 +15,7 @@ const initYoutubePlayer = (id, h, w) => {
   var player;
   function onYouTubeIframeAPIReady() {
     let waitTime = 3000;
-    pleaseWaitMessage(waitTime);
+    pleaseWaitMessage(waitTime + 1000);
     setInterval( () => {
       console.log("iframe ready")
       player = new YT.Player('youtube-player', {
@@ -26,11 +26,15 @@ const initYoutubePlayer = (id, h, w) => {
           'onReady': onPlayerReady
         }
       });
+
     }, waitTime);
+
   }
 
    // 4. The API will call this function when the video player is ready.
   function onPlayerReady(event) {
+    window.player = event.target;
+    console.log("play video 1");
     event.target.playVideo();
   }
 
