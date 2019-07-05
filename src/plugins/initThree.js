@@ -141,18 +141,23 @@ const init = (withAR = false, withCSS3D = false) => {
   // Add objects to the ThreeJS scene
   let heightStr = (560).toString();
   let widthStr = (315).toString();
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const youtubeParams = urlParams.get('ytid');
+  console.log(`Youtube video ID: ${youtubeParams}`);
+
   if (withAR) {
     let sceneAR = initARJS(scene, camera, onRenderFcts, renderer);
     // addBox(1, sceneAR);
     if (withCSS3D) {
       addHoleInTheWall(sceneAR);
-      addYoutubeVideo('YQUCW9JczcA', 0, -300, 0, -Math.PI / 2, 0, 0, heightStr, widthStr, sceneAR);
+      addYoutubeVideo(youtubeParams, 0, -300, 0, -Math.PI / 2, 0, 0, heightStr, widthStr, sceneAR);
     }
   } else {
     addBox(20, scene);
     groundObject(200, scene);
     if (withCSS3D) {
-      addYoutubeVideo('YQUCW9JczcA', 0, 0, -50, 0, 0, 0, heightStr, widthStr, scene);
+      addYoutubeVideo(youtubeParams, 0, 0, -50, 0, 0, 0, heightStr, widthStr, scene);
     }
   }
 
