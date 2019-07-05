@@ -146,13 +146,13 @@ const init = (withAR = false, withCSS3D = false) => {
     // addBox(1, sceneAR);
     if (withCSS3D) {
       addHoleInTheWall(sceneAR);
-      addYoutubeVideo('pm-R3dvrUZg', 0, -300, 0, -Math.PI / 2, 0, 0, heightStr, widthStr, sceneAR);
+      addYoutubeVideo('YQUCW9JczcA', 0, -300, 0, -Math.PI / 2, 0, 0, heightStr, widthStr, sceneAR);
     }
   } else {
     addBox(20, scene);
     groundObject(200, scene);
     if (withCSS3D) {
-      addYoutubeVideo('pm-R3dvrUZg', 0, 0, -50, 0, 0, 0, heightStr, widthStr, scene);
+      addYoutubeVideo('YQUCW9JczcA', 0, 0, -50, 0, 0, 0, heightStr, widthStr, scene);
     }
   }
 

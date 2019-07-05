@@ -1,3 +1,5 @@
+import { pleaseWaitMessage, successMessage } from './initSweetAlert2';
+
 const initYoutubePlayer = (id, h, w) => {
 
   // This code loads the IFrame Player API code asynchronously.
@@ -12,14 +14,19 @@ const initYoutubePlayer = (id, h, w) => {
   //    after the API code downloads.
   var player;
   function onYouTubeIframeAPIReady() {
-    player = new YT.Player('youtube-player', {
-      height: h,
-      width: w,
-      videoId: id,
-      events: {
-        'onReady': onPlayerReady
-      }
-    });
+    let waitTime = 3000;
+    pleaseWaitMessage(waitTime);
+    setInterval( () => {
+      console.log("iframe ready")
+      player = new YT.Player('youtube-player', {
+        height: h,
+        width: w,
+        videoId: id,
+        events: {
+          'onReady': onPlayerReady
+        }
+      });
+    }, waitTime);
   }
 
    // 4. The API will call this function when the video player is ready.
