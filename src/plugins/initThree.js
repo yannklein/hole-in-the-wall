@@ -4,6 +4,7 @@ import { initARJS } from './initAR';
 import {initCSS3DRenderer, iFrameElement} from './initCSS3DRenderer';
 
 let mouse = new THREE.Vector2();
+let controls, controlsCSS3D;
 
 const onWindowResize = () => {
   camera.aspect = window.innerWidth / window.innerHeight;
@@ -11,19 +12,20 @@ const onWindowResize = () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
 };
 
-const addBox = (size, myScene) => {
+const addBox = (x, y, z, size, myScene) => {
   const texture = new THREE.TextureLoader().load('images/yann.jpg');
   const geometry = new THREE.BoxBufferGeometry(size, size, size);
   const material = new THREE.MeshBasicMaterial({ map: texture });
   let mesh = new THREE.Mesh(geometry, material);
   mesh.position.y = size/2;
+  mesh.position.set(x, mesh.position.y + y, z);
   myScene.add(mesh);
 };
 
-const addHoleInTheWall = (myScene) => {
+const addHoleInTheWall = (x, y, z, rx, ry, rz, size, myScene) => {
   var hole = new THREE.Group();
   // the inside of the hole
-  let geometryHole = new THREE.CylinderGeometry(1,1, 1, 32,1, true);
+  let geometryHole = new THREE.CylinderGeometry(1, 1, 1, 32,1, true);
   let loader = new THREE.TextureLoader();
   let texture = loader.load( 'images/bricks.jpg' );
   texture.wrapS = THREE.RepeatWrapping;
@@ -36,13 +38,16 @@ const addHoleInTheWall = (myScene) => {
   });
   var holeInside = new THREE.Mesh( geometryHole, materialHole );
   holeInside.position.y = -0.6;
+  hole.position.set(x, y, z);
+  hole.rotation.set(rx, ry, rz);
+  hole.scale.multiplyScalar(size);
   hole.add( holeInside );
 
 
   // the invisibility cloak (ring; has circular hole)
-  let geometryCloak = new THREE.RingGeometry(1,30, 32);
+  let geometryCloak = new THREE.RingGeometry(1, 10, 32);
   let materialCloak = new THREE.MeshBasicMaterial({
-     map: loader.load( 'images/bricks.jpg' ), // for testing placement
+    map: loader.load( 'images/bricks.jpg' ), // for testing placement
     colorWrite: true
   });
   var holeCloak = new THREE.Mesh( geometryCloak, materialCloak );
@@ -54,7 +59,23 @@ const addHoleInTheWall = (myScene) => {
 };
 
 const addYoutubeVideo = (id, x, y, z, rx, ry, rz, h, w, myScene) => {
-  myScene.add(new iFrameElement(id, x, y, z, rx, ry, rz, h, w));
+  let youtubeObject = new iFrameElement(id, x, y, z, rx, ry, rz, h, w);
+  myScene.add(youtubeObject);
+  // Creating mesh to mix WebGL and CSS3D objects
+  var material = new THREE.MeshPhongMaterial({
+                opacity : 0.2,
+                color : new THREE.Color('black'),
+                blending: THREE.NoBlending,
+                side  : THREE.DoubleSide,
+            });
+  // create the plane mesh
+  var geometry = new THREE.PlaneGeometry(h,w);
+  var planeMesh = new THREE.Mesh( geometry, material );
+
+  planeMesh.position.copy(youtubeObject.position);
+  planeMesh.rotation.copy(youtubeObject.rotation);
+  // add it to the WebGL scene
+  myScene.add(planeMesh);
 };
 
 const groundObject = (size, myScene) => {
@@ -119,7 +140,7 @@ const init = (withAR = false, withCSS3D = false) => {
   if (!withAR) {
 
     if (withCSS3D) {
-      let controlsCSS3D = new OrbitControls( camera, rendererCSS3D.domElement );
+      controlsCSS3D = new OrbitControls( camera, rendererCSS3D.domElement );
       controlsCSS3D.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
       controlsCSS3D.dampingFactor = 0.25;
       controlsCSS3D.screenSpacePanning = false;
@@ -128,7 +149,7 @@ const init = (withAR = false, withCSS3D = false) => {
       controlsCSS3D.maxPolarAngle = Math.PI / 2;
     }
 
-    let controls = new OrbitControls( camera, renderer.domElement );
+    controls = new OrbitControls( camera, renderer.domElement );
     controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
     controls.dampingFactor = 0.25;
     controls.screenSpacePanning = false;
@@ -150,13 +171,14 @@ const init = (withAR = false, withCSS3D = false) => {
     let sceneAR = initARJS(scene, camera, onRenderFcts, renderer);
     // addBox(1, sceneAR);
     if (withCSS3D) {
-      addHoleInTheWall(sceneAR);
+      addHoleInTheWall(0, 0, 0, 0, 0, 0, 1, sceneAR);
       addYoutubeVideo(youtubeParams, 0, -300, 0, -Math.PI / 2, 0, 0, heightStr, widthStr, sceneAR);
     }
   } else {
-    addBox(20, scene);
+    addBox(0, 30, 0, 20, scene);
     groundObject(200, scene);
     if (withCSS3D) {
+      addHoleInTheWall(0, 5, 0, Math.PI / 2, 0, 0, 5, scene);
       addYoutubeVideo(youtubeParams, 0, 0, -50, 0, 0, 0, heightStr, widthStr, scene);
     }
   }
