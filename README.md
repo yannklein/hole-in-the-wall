@@ -10,7 +10,7 @@ Get the youtube stream ID (Example: PmrWwYTlAVQ for https://www.youtube.com/watc
 Go to https://yannklein.me/hole-in-the-wall/?ytid=:[youtube_ID] ( Example: https://yannklein.me/hole-in-the-wall/?ytid=PmrWwYTlAVQ )
 
 Point this QR marker with the camera displaying from the above website:
-![qr marker](https://github.com/yannklein/hole-in-the-wall/blob/images/marker.png)
+![qr marker](https://www.yannklein.me/hole-in-the-wall/images/marker.png)
 
 ## Built With
 
